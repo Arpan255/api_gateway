@@ -1,0 +1,32 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-a:8762/eureka/
+server:
+  port: 8222
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: author
+          uri: http://author-a:9091
+          predicates:
+            - Path=/authors/**
+        - id: book-service
+          uri: http://book-a:9092
+          predicates:
+            - Path=/api/**
+        - id:  security
+          uri: http://auth-a:6969
+          predicates:
+            - Path=/cred/**
+
+      routes[0]:
+        filters[0]: AuthenticationFilter
+      routes[1]:
+        filters[0]: AuthenticationFilter
